@@ -169,81 +169,93 @@ int main(int argc, char* args[]){
     
     //Set asteroids data
     for(j=0; j!=5; j++){
-						for(i=0; i!=AST_NUM; i++){
-												  //Set random x   
-												  if(j==0){ast[i][j]=(-100)+rand()%(SCREEN_X+100);}	
-												  //Set random y					      
-												  if(j==1){ast[i][j]=(-100)+rand()%(SCREEN_Y+100);}					
-												  //Set a permanent diamter
-												  if(j==4){ast[i][j]=AST_D_MIN+rand()%(AST_D_MAX-AST_D_MIN);}
-												  //Set random vax & vay looking at the spam zone of the asteroid
-													  if(j!=0 && j!=1){if(ast[i][0]<=SCREEN_X/2){//It means it spawns in the left side of the screen
-												  							if(ast[i][1]<=SCREEN_Y/2){//In the high on the left
-												  							                          ast[i][2]=AST_V_MIN+rand()%AST_V_MAX;
-												  							                          ast[i][3]=AST_V_MIN+rand()%AST_V_MAX;
-																									  }else{//In the down left 
-																									       ast[i][2]=AST_V_MIN+rand()%AST_V_MAX;
-																									       ast[i][3]=(AST_V_MIN+rand()%AST_V_MAX)*(-1);
-																									      }
-												                                            }
-												  					if(ast[i][0]>SCREEN_X/2){//It means it spawns int the right side of the screen
-												                           					if(ast[i][1]<=SCREEN_Y/2){//In the high on the right
-												                                                	ast[i][2]=(AST_V_MIN+rand()%AST_V_MAX)*(-1);
-												  							                         ast[i][3]=AST_V_MIN+rand()%AST_V_MAX;
-												                                                    }else{//In the down right
-												                                                          ast[i][2]=(AST_V_MIN+rand()%AST_V_MAX)*(-1);
-												  							                              ast[i][3]=(AST_V_MIN+rand()%AST_V_MAX)*(-1);
-												                                                         }
-												                          }
-                                                                 }
-                                                 }
-                       }
-    
-   
+		for(i=0; i!=AST_NUM; i++){
+			  //Set random x   
+			if(j==0)
+				ast[i][j]=(-100)+rand()%(SCREEN_X+100);	
+			  	//Set random y					      
+			if(j==1)
+				ast[i][j]=(-100)+rand()%(SCREEN_Y+100);					
+			  //Set a permanent diamter
+			if(j==4)
+				ast[i][j]=AST_D_MIN+rand()%(AST_D_MAX-AST_D_MIN);
+			 //Set random vax & vay looking at the spam zone of the asteroid
+			if(j!=0 && j!=1){
+				if(ast[i][0]<=SCREEN_X/2){
+					//It means it spawns in the left side of the screen
+					if(ast[i][1]<=SCREEN_Y/2){
+						//In the high on the left
+						ast[i][2]=AST_V_MIN+rand()%AST_V_MAX;
+						ast[i][3]=AST_V_MIN+rand()%AST_V_MAX;
+					}
+					else{
+						//In the down left 
+						ast[i][2]=AST_V_MIN+rand()%AST_V_MAX;
+						ast[i][3]=(AST_V_MIN+rand()%AST_V_MAX)*(-1);
+					}
+				}
+				if(ast[i][0]>SCREEN_X/2){
+				//It means it spawns int the right side of the screen
+					if(ast[i][1]<=SCREEN_Y/2){
+						//In the high on the right
+						ast[i][2]=(AST_V_MIN+rand()%AST_V_MAX)*(-1);
+						ast[i][3]=AST_V_MIN+rand()%AST_V_MAX;
+    				}
+					else{
+						//In the down right
+    					ast[i][2]=(AST_V_MIN+rand()%AST_V_MAX)*(-1);
+  						ast[i][3]=(AST_V_MIN+rand()%AST_V_MAX)*(-1);
+   					}
+       			}
+    		}
+ 		}
+	}
 	
 	ac=false;
 	
 	if(vpy<0){pavailable=true;}
-			
-				
-	//Core code begin//					
-	do{ //Player Y/X acceleration management or parachute activation
-		
+						
+	//Core code begins//					
+	
+	do{ 
+		//Player y/x acceleration management or parachute activation
 		dt=1;
-	
-		if(s.checkEvent()){
-		 	if(s.isKeyEvent()){
-			 	key=s.getKeyCode();                                                    
-	            if(key==SDLK_w && rockacc<pfuel){
-					apy=g-PLAYER_ROCKET_ACCEL;
-					apx=0;
-					rockacc++;
+			if(s.checkEvent()){
+			 	if(s.isKeyEvent()){
+				 	key=s.getKeyCode();                                                    
+		            if(key==SDLK_w && rockacc<pfuel){
+						apy=g-PLAYER_ROCKET_ACCEL;
+						apx=0;
+						rockacc++;
+					}
+					if(key==SDLK_s && rockacc<pfuel){
+						apy=g+PLAYER_ROCKET_ACCEL;
+						apx=0;
+						rockacc++;
+					}
+					if(key==SDLK_a){
+						apx=(-1)*PLAYER_ROCKET_ACCEL;
+					}
+					if(key==SDLK_d){
+						apx=PLAYER_ROCKET_ACCEL;
+					}
+					if(key==SDLK_SPACE && pavailable){
+						pavailable=false;
+					}
+				    s.flushEvents(); 
 				}
-				if(key==SDLK_s && rockacc<pfuel){
-					apy=g+PLAYER_ROCKET_ACCEL;
-					apx=0;
-					rockacc++;
-				}
-				if(key==SDLK_a){
-					apx=(-1)*PLAYER_ROCKET_ACCEL;
-				}
-				if(key==SDLK_d){
-					apx=PLAYER_ROCKET_ACCEL;
-				}
-				if(key==SDLK_SPACE && pavailable){
-					pavailable=false;
-				}
-			    s.flushEvents(); 
-				}
-	    }else{apy=g;
-	          apx=0;
-		     }
-	    if(pavailable==false){																	//Decrease speed and accelerations if parachute in opened
-							   if(vpx!=0){vpx=vpx-(X_DECELL)*vpx;}											
-							   if(vpy>Y_MIN_SPEED){apy=-(Y_DECELL)*apy;}
-						 	 }
-	
-													    
+	    	}
+		else{
+			apy=g;
+	    	apx=0;
+		}
+	    if(pavailable==false){
+			//Decrease speed and accelerations if parachute in opened
+			if(vpx!=0)
+				vpx=vpx-(X_DECELL)*vpx;											
+			if(vpy>Y_MIN_SPEED)
+				apy=-(Y_DECELL)*apy;
+		}				    
 		s.useColor("spaceCol");														
 		s.clear();
 		s.useColor("bg");
@@ -258,20 +270,24 @@ int main(int argc, char* args[]){
 		if(key==SDLK_w){s.useColor("fire");
 						s.fillRect(xp,yp+PLAYER_H,FIRE_W,FIRE_H);
 		               }
-		if(key==SDLK_a){s.useColor("fire");
-						s.fillRect(xp+PLAYER_W,yp,FIRE_H,FIRE_W);
-		               }
-		if(key==SDLK_d){s.useColor("fire");
-						s.fillRect(xp-FIRE_H,yp,FIRE_H,PLAYER_W);
-		               } 
-		if(key==SDLK_s){s.useColor("fire");
-						s.fillRect(xp,yp-FIRE_H,FIRE_W,PLAYER_H);
-		               }			     
+		if(key==SDLK_a){
+			s.useColor("fire");
+			s.fillRect(xp+PLAYER_W,yp,FIRE_H,FIRE_W);
+		}
+		if(key==SDLK_d){
+			s.useColor("fire");
+			s.fillRect(xp-FIRE_H,yp,FIRE_H,PLAYER_W);
+		} 
+		if(key==SDLK_s){
+		s.useColor("fire");
+		s.fillRect(xp,yp-FIRE_H,FIRE_W,PLAYER_H);
+		}			     
 		
 		
 		//Drawing all the asteroids
 		s.useColor("asteroid");
-		for(i=0; i!=AST_NUM; i++){s.fillOval(ast[i][0], ast[i][1], ast[i][4], ast[i][4]);}            
+		for(i=0; i!=AST_NUM; i++)
+			s.fillOval(ast[i][0], ast[i][1], ast[i][4], ast[i][4]);            
 		
 		key=0;
 		
@@ -288,77 +304,90 @@ int main(int argc, char* args[]){
 		s.text(650,30, fuel  ,10);	
 		s.text(650,40,plevel,10);
 		s.useColor("warningCol");
-		if(rockacc>=pfuel){s.text(SCREEN_X/2-80,SCREEN_Y/2,"You've run out of fuel!",10);}	
+		if(rockacc>=pfuel)
+			s.text(SCREEN_X/2-80,SCREEN_Y/2,"You've run out of fuel!",10);	
 		
 		
 		//Asteroids managment
 			//Update the new asteroids position
-		for(i=0; i!=AST_NUM; i++){ast[i][0]=ast[i][0]+ast[i][2]*dt;
-								  ast[i][1]=ast[i][1]+ast[i][3]*dt;
-		                         }
-			
-			
-			//I set new coords and new speeds for the asteroids out of the screen
 		for(i=0; i!=AST_NUM; i++){
-								  if(ast[i][0]>900 || ast[i][0]<(-100) || ast[i][1]<(-100) || ast[i][1]>700){
-								  																			 do{ //I do it while the asteroids are appearing 20 pixel far from the spaceship 
-																													ast[i][0]=(-100)+rand()%(SCREEN_X+100);
-																													ast[i][1]=(-100)+rand()%(SCREEN_Y+100);
-																													 //Check taht all the asteroids have born far from spaceship
-		                        																					xadif=xp-ast[i][0];
-		                        																					yadif=yp-ast[i][1];
-																													}while(abs(xadif)<AST_DIST_X && abs(yadif)<AST_DIST_Y);		//Here i set all the way the asteroids DOESN'T have to appear
-																													//now it's gonna set all the asteroid's accellerations
-																													
-																												if(ast[i][0]<=SCREEN_X/2){//It means it spawns in the left side of the screen
-												  																						  if(ast[i][1]<=SCREEN_Y/2){//In the high on the left
-												  							                          																ast[i][2]=AST_V_MIN+rand()%AST_V_MAX;
-												  							                          																ast[i][3]=AST_V_MIN+rand()%AST_V_MAX;
-																									  																}else{//In the down left 
-																									       																  ast[i][2]=AST_V_MIN+rand()%AST_V_MAX;
-																									       																  ast[i][3]=(AST_V_MIN+rand()%AST_V_MAX)*(-1);
-																									      																 }
-												                                            											}
-												  																if(ast[i][0]>SCREEN_X/2){//It means it spawns int the right side of the screen
-												                           																 if(ast[i][1]<=SCREEN_Y/2){//In the high on the right
-												                                                																   ast[i][2]=(AST_V_MIN+rand()%AST_V_MAX)*(-1);
-												  							                         												 			   ast[i][3]=AST_V_MIN+rand()%AST_V_MAX;
-												                                                                                                                  }else{//In the down right
-												                                                          																ast[i][2]=(AST_V_MIN+rand()%AST_V_MAX)*(-1);
-												  							                              																ast[i][3]=(AST_V_MIN+rand()%AST_V_MAX)*(-1);
-												                                                         															   }
-												                                                                                         }
-																												}
-		                           
-		                        	
-									
-								}
+			ast[i][0]=ast[i][0]+ast[i][2]*dt;
+			ast[i][1]=ast[i][1]+ast[i][3]*dt;
+		}
+		//I set new coords and new speeds for the asteroids out of the screen
+		for(i=0; i!=AST_NUM; i++){
+			if(ast[i][0]>900 || ast[i][0]<(-100) || ast[i][1]<(-100) || ast[i][1]>700){
+				do{ 
+					//I do it while the asteroids are appearing 20 pixel far from the spaceship 
+					ast[i][0]=(-100)+rand()%(SCREEN_X+100);
+					ast[i][1]=(-100)+rand()%(SCREEN_Y+100);
+					//Check taht all the asteroids have born far from spaceship
+		            xadif=xp-ast[i][0];
+		            yadif=yp-ast[i][1];
+				}
+				while(abs(xadif)<AST_DIST_X && abs(yadif)<AST_DIST_Y);
+				
+				//Here i set all the way the asteroids DOESN'T have to appear
+				//now it's gonna set all the asteroid's accellerations														
+				if(ast[i][0]<=SCREEN_X/2){
+					//It means it spawns in the left side of the screen
+					if(ast[i][1]<=SCREEN_Y/2){
+						//In the high on the left
+						ast[i][2]=AST_V_MIN+rand()%AST_V_MAX;
+						ast[i][3]=AST_V_MIN+rand()%AST_V_MAX;
+					}
+					else{
+						//In the down left 
+			  			ast[i][2]=AST_V_MIN+rand()%AST_V_MAX;
+			  			ast[i][3]=(AST_V_MIN+rand()%AST_V_MAX)*(-1);
+			 		}
+				}
+				if(ast[i][0]>SCREEN_X/2){
+					//It means it spawns int the right side of the screen
+					if(ast[i][1]<=SCREEN_Y/2){
+						//In the high on the right
+				   		ast[i][2]=(AST_V_MIN+rand()%AST_V_MAX)*(-1);
+				   		ast[i][3]=AST_V_MIN+rand()%AST_V_MAX;
+					}
+					else{
+						//In the down right
+						ast[i][2]=(AST_V_MIN+rand()%AST_V_MAX)*(-1);
+						ast[i][3]=(AST_V_MIN+rand()%AST_V_MAX)*(-1);
+					}
+			}
+		}
+	}
 		
 																																																																						
 		
 		s.redraw();
 		
 		//I check if there're colliasoins against the asteroids																																																										
-		for(i=0; i!=AST_NUM; i++){if(xp<ast[i][0] && yp<ast[i][1]){//The spaceship is upper and lefter than the ast
-																   if(ast[i][0]-xp<=PLAYER_W && ast[i][1]-yp<=PLAYER_H){ac=true;}
-																  }
-      							  if(xp<ast[i][0] && yp>ast[i][1]){//Downer and lefter
-      							 								   if(ast[i][0]-xp<=PLAYER_W && yp-ast[i][1]<=PLAYER_H){ac=true;}
-      							 								  }
-      						     
-      						      if(xp>ast[i][0] && yp<ast[i][1]){//Upper and righter
-      						     								   if(xp-ast[i][0]<=PLAYER_W && ast[i][1]-yp<=PLAYER_H){ac=true;}
-      						     								  }
-      						      if(xp>ast[i][0] && yp>ast[i][1]){//Downer and righter
-      						                                       if(xp-ast[i][0]<=PLAYER_W && yp-ast[i][1]<=PLAYER_H){ac=true;}
-      						                                      }
-      						      }
-      						      
+		for(i=0; i!=AST_NUM; i++){
+			if(xp<ast[i][0] && yp<ast[i][1]){
+				//The spaceship is upper and lefter than the ast
+				if(ast[i][0]-xp<=PLAYER_W && ast[i][1]-yp<=PLAYER_H)
+				 	ac=true;
+			}
+	      	if(xp<ast[i][0] && yp>ast[i][1]){
+			  	//Downer and lefter
+	      	    if(ast[i][0]-xp<=PLAYER_W && yp-ast[i][1]<=PLAYER_H)
+				  	ac=true;
+	      	}
+	      						     
+	      	if(xp>ast[i][0] && yp<ast[i][1]){//Upper and righter
+	      	    if(xp-ast[i][0]<=PLAYER_W && ast[i][1]-yp<=PLAYER_H)
+				  	ac=true;
+	      	}
+	      	if(xp>ast[i][0] && yp>ast[i][1]){//Downer and righter
+	      		if(xp-ast[i][0]<=PLAYER_W && yp-ast[i][1]<=PLAYER_H)
+				    ac=true;
+	      	}
+		}					      
       	//I've checked if there's been contacts along the ateroid's edges
-		
-		
 		s.delay(25);
-		}while(xp>=0 && xp<=SCREEN_X-PLAYER_W && yp>=-10 && yp<SCREEN_Y-PLAYER_H && ac==false);
+		}
+		while(xp>=0 && xp<=SCREEN_X-PLAYER_W && yp>=-10 && yp<SCREEN_Y-PLAYER_H && ac==false);
 		
 	s.useColor("spaceCol");
 	s.clear();
@@ -369,27 +398,31 @@ int main(int argc, char* args[]){
 	
 
 	//Right landing position checking	
-	if((xp+PLAYER_W<xplatf || xp>xplatf+wplatf) && ac==false){w=false;
-	                                                            					  s.useColor("fg");
-											   				     					  s.text(SCREEN_X/2-150, SCREEN_Y/2, "Your spaceship has been lost in the deep space.", 10);
-	                                                      	                          }
+	if((xp+PLAYER_W<xplatf || xp>xplatf+wplatf) && ac==false){
+		w=false;
+        s.useColor("fg");
+		s.text(SCREEN_X/2-150, SCREEN_Y/2, "Your spaceship has been lost in the deep space.", 10);
+	}
 	                                                                    	     
 	//Right speed checking   
-	if(vpy>LANDING_VPY_MAX && w==true && ac==false){w=false;
-									   s.useColor("fg");
-				                       s.text(SCREEN_X/2-150, SCREEN_Y/2, "Your spaceship landed on the platform too fastly.", 10);
-	                                  }
-	
-	//I check if there has been a contact with the asteroids and the spaceship
-	if(ac==true && w==true){w=false;
-	            		   s.useColor("fg");
-	                       s.text(SCREEN_X/2-150, SCREEN_Y/2, "Your spaceship has been destroyed against an asteroid!", 10);       																								
+	if(vpy>LANDING_VPY_MAX && w==true && ac==false){
+		w=false;
+		s.useColor("fg");
+		s.text(SCREEN_X/2-150, SCREEN_Y/2, "Your spaceship landed on the platform too fastly.", 10);
 	}
 	
-//If w is still true means that the player has won
-	if(w==true){s.useColor("fg");
-				s.text(SCREEN_X/2-200, SCREEN_Y/2, "Well done captain! Your spaceship has landed on the approach platform!", 10);
-	           }
+	//I check if there has been a contact with the asteroids and the spaceship
+	if(ac==true && w==true){
+		w=false;
+	    s.useColor("fg");
+	    s.text(SCREEN_X/2-150, SCREEN_Y/2, "Your spaceship has been destroyed against an asteroid!", 10);       																								
+	}
+	
+	//If w is still true means that the player has won
+	if(w==true){
+		s.useColor("fg");
+		s.text(SCREEN_X/2-200, SCREEN_Y/2, "Well done captain! Your spaceship has landed on the approach platform!", 10);
+	}
 	           
 	pavailable=true;		//Closes parachute
 	           	
@@ -408,7 +441,7 @@ int main(int argc, char* args[]){
 	s.text(320,290, plevel, 15);
 	s.drawRect(50,450,700,100);
 	s.text(360,490,"Exit.",15);
-	s.useColor("fg");																							/////////////
+	s.useColor("fg");																					/////////////
 	s.drawTLine(200, 200, 600, 800, 100);																	/////////////
 	s.redraw();
 	
@@ -421,8 +454,10 @@ int main(int argc, char* args[]){
     
     //In the end var 0 means that the player hasn't decided what to do yet, 1 means that he wants to play again and 2 means that he want to go out (asshole)
     
-	if(xm>50 && xm<750 && ym>50 && ym<150){end=1;}
-	if(xm>50 && xm<750 && ym>450 && ym<550){end=2;}
+	if(xm>50 && xm<750 && ym>50 && ym<150)
+		end=1;
+	if(xm>50 && xm<750 && ym>450 && ym<550)
+	    end=2;
 	
     }while(end==0);
 	
