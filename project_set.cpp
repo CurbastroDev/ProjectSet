@@ -112,40 +112,46 @@ int main(int argc, char* args[]){
 	
 	do{
 
-	if(w==true){level++;}
-	pfuel=150-(level*5);
-	end=0;
-	g=0;
-	
-	do{
-	s.useColor("fg");
-	s.drawRect(100,50,100,50);
-	s.text(132,68, "EARTH", 15);
-	s.drawRect(600,50,100,50);
-	s.text(623,68, "NEPTUNE", 15);
-	s.drawRect(100,500,100,50);
-	s.text(135,518, "MARS", 15);
-	s.drawRect(600,500,100,50);
-	s.text(630,518, "VENUS", 15);
-	s.drawRect(350,250,100,50);
-	s.text(377,268, "SATURN", 15);
-
-	s.redraw();
-
-	if(xm>100 && xm<200 && ym>50 && ym<100){g=G_EARTH;}
-	if(xm>600 && xm<700 && ym>50 && ym<100){g=G_NEPTUNE;}
-	if(xm>100 && xm<200 && ym>500 && ym<550){g=G_MARS;}
-	if(xm>600 && xm<700 && ym>500 && ym<550){g=G_VENUS;}
-	if(xm>350 && xm<450 && ym>250 && ym<300){g=G_SATURN;}
-	
-	if(s.checkEvent()){
-		if(s.isMouseButtonEvent()){
-			xm=s.getMouseX();
-			ym=s.getMouseY();	
-		}
-    }
-
-	  }while(g==0);
+		if(w==true)
+			level++;
+		pfuel=150-(level*5);
+		end=0;
+		g=0;
+		
+		do{
+			s.useColor("fg");
+			s.drawRect(100,50,100,50);
+			s.text(132,68, "EARTH", 15);
+			s.drawRect(600,50,100,50);
+			s.text(623,68, "NEPTUNE", 15);
+			s.drawRect(100,500,100,50);
+			s.text(135,518, "MARS", 15);
+			s.drawRect(600,500,100,50);
+			s.text(630,518, "VENUS", 15);
+			s.drawRect(350,250,100,50);
+			s.text(377,268, "SATURN", 15);
+		
+			s.redraw();
+		
+			if(xm>100 && xm<200 && ym>50 && ym<100)
+				g=G_EARTH;
+			if(xm>600 && xm<700 && ym>50 && ym<100)
+				g=G_NEPTUNE;
+			if(xm>100 && xm<200 && ym>500 && ym<550)
+				g=G_MARS;
+			if(xm>600 && xm<700 && ym>500 && ym<550)
+				g=G_VENUS;
+			if(xm>350 && xm<450 && ym>250 && ym<300)
+				g=G_SATURN;
+			
+			if(s.checkEvent()){
+				if(s.isMouseButtonEvent()){
+					xm=s.getMouseX();
+					ym=s.getMouseY();	
+				}
+		    }
+		
+		  }while(g==0);
 	 
 	//Select planet gravity
 	                                            												
@@ -213,36 +219,37 @@ int main(int argc, char* args[]){
 	
 	ac=false;
 	
-	if(vpy<0){pavailable=true;}
+	if(vpy<0)
+		pavailable=true;
 						
 	//Core code begins//					
 	
 	do{ 
 		//Player y/x acceleration management or parachute activation
 		dt=1;
-			if(s.checkEvent()){
-			 	if(s.isKeyEvent()){
-				 	key=s.getKeyCode();                                                    
-		            if(key==SDLK_w && rockacc<pfuel){
-						apy=g-PLAYER_ROCKET_ACCEL;
-						apx=0;
-						rockacc++;
+		if(s.checkEvent()){
+		 	if(s.isKeyEvent()){
+				key=s.getKeyCode();                                                    
+		        if(key==SDLK_w && rockacc<pfuel){
+					apy=g-PLAYER_ROCKET_ACCEL;
+					apx=0;
+					rockacc++;
 					}
-					if(key==SDLK_s && rockacc<pfuel){
-						apy=g+PLAYER_ROCKET_ACCEL;
-						apx=0;
-						rockacc++;
-					}
-					if(key==SDLK_a){
-						apx=(-1)*PLAYER_ROCKET_ACCEL;
-					}
-					if(key==SDLK_d){
-						apx=PLAYER_ROCKET_ACCEL;
-					}
-					if(key==SDLK_SPACE && pavailable){
-						pavailable=false;
-					}
-				    s.flushEvents(); 
+				if(key==SDLK_s && rockacc<pfuel){
+					apy=g+PLAYER_ROCKET_ACCEL;
+					apx=0;
+					rockacc++;
+				}
+				if(key==SDLK_a){
+					apx=(-1)*PLAYER_ROCKET_ACCEL;
+				}
+				if(key==SDLK_d){
+					apx=PLAYER_ROCKET_ACCEL;
+				}
+				if(key==SDLK_SPACE && pavailable){
+					pavailable=false;
+				}
+			    s.flushEvents(); 
 				}
 	    	}
 		else{
@@ -267,9 +274,10 @@ int main(int argc, char* args[]){
 		
 		
 		//Writing the different engine fire in the spaceship
-		if(key==SDLK_w){s.useColor("fire");
-						s.fillRect(xp,yp+PLAYER_H,FIRE_W,FIRE_H);
-		               }
+		if(key==SDLK_w){
+			s.useColor("fire");
+			s.fillRect(xp,yp+PLAYER_H,FIRE_W,FIRE_H);
+		}
 		if(key==SDLK_a){
 			s.useColor("fire");
 			s.fillRect(xp+PLAYER_W,yp,FIRE_H,FIRE_W);
